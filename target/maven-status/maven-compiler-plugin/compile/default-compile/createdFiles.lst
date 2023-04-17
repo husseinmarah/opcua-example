@@ -1,0 +1,6 @@
+milo\opcua\client\Client.class
+milo\opcua\server\CallMe.class
+milo\opcua\server\CustomNamespace.class
+milo\opcua\server\Server$1.class
+milo\opcua\server\CustomNamespace$1.class
+milo\opcua\server\Server.class
