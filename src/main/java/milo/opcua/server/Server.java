@@ -10,10 +10,12 @@ import org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig;
 import org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfigBuilder;
 import org.eclipse.milo.opcua.sdk.server.identity.AnonymousIdentityValidator;
 import org.eclipse.milo.opcua.sdk.server.identity.CompositeValidator;
+import org.eclipse.milo.opcua.sdk.server.util.HostnameUtil;
 import org.eclipse.milo.opcua.stack.core.UaException;
-import org.eclipse.milo.opcua.stack.core.security.CertificateValidator;
 import org.eclipse.milo.opcua.stack.core.security.DefaultCertificateManager;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DateTime;
+import org.eclipse.milo.opcua.stack.core.types.structured.BuildInfo;
 import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
 import org.eclipse.milo.opcua.stack.server.security.ServerCertificateValidator;
 
@@ -24,6 +26,9 @@ import static java.util.Collections.singleton;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText.english;
 
 public class Server {
+    private static final int PORT = 4840;
+    private static final String SERVER_NAME = "Simple OPC UA Server";
+
     public static void main(final String[] args) throws Exception {
 
         final OpcUaServerConfigBuilder builder = new OpcUaServerConfigBuilder();
@@ -39,12 +44,12 @@ public class Server {
         );
 
         endpointBuilder.setSecurityPolicy(SecurityPolicy.None); // ... or give everyone access to your fridge ...
+        endpointBuilder.setBindPort(PORT);
 
-        endpointBuilder.setBindPort(4840);
         builder.setEndpoints(singleton(endpointBuilder.build()));
-
-        builder.setApplicationName(english("Foo Bar Server"));
-        builder.setApplicationUri("urn:my:example");
+        builder.setApplicationName(english(SERVER_NAME));
+        builder.setApplicationUri("urn:" + HostnameUtil.getHostname() + ":" + PORT + "/" + SERVER_NAME);
+        builder.setBuildInfo(new BuildInfo("", "", "", "", "", new DateTime()));
 
         builder.setCertificateManager(new DefaultCertificateManager()); // ... don't to this at home! ...
 

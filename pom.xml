@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>milo_example</artifactId>
+    <artifactId>opcua_example</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -58,15 +58,36 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <executions>
+<!--                        <execution>-->
+<!--                            <goals>-->
+<!--                                <goal>java</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
                         <execution>
+                            <id>ServerMain</id>
+                            <configuration>
+                                <mainClass>milo.opcua.server.Server</mainClass>
+                            </configuration>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>ClientMain</id>
+                            <configuration>
+                                <mainClass>milo.opcua.client.Client</mainClass>
+                            </configuration>
                             <goals>
                                 <goal>java</goal>
                             </goals>
                         </execution>
                     </executions>
-                    <configuration>
-                        <mainClass>milo.opcua.server.Server</mainClass>
-                    </configuration>
+<!--                    <configuration>-->
+<!--                        <mainClass>milo.opcua.server.Server</mainClass>-->
+<!--                    </configuration>-->
+<!--                    -->
+
+
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -11,7 +11,6 @@ import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
 import org.eclipse.milo.opcua.sdk.client.nodes.UaNode;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
-import org.eclipse.milo.opcua.stack.core.BuiltinReferenceType;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
@@ -22,6 +21,7 @@ import org.eclipse.milo.opcua.stack.core.types.enumerated.NodeClass;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.*;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,19 +29,28 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 public class Client {
 
-    private static final String ENDPOINT_URL = "opc.tcp://localhost:4840";
+    //    private static final String ENDPOINT_URL = "opc.tcp://localhost:4840";
+    private static final int PORT = 4840;
+
+    public Client() throws UnknownHostException {
+    }
 
     public static void main(String[] args) throws Exception {
+        ////////// DISCOVER ENDPOINT /////////
+        // Discover server's endpoints, and choose one
+//        final String publicHostname = InetAddress.getLocalHost().getHostName();
+        final String publicHostname = "localhost";
+        final String ENDPOINT_URL = "opc.tcp://" + publicHostname + ":" + PORT; // ServerExample1
 
         List<EndpointDescription> endpoints = DiscoveryClient.getEndpoints(ENDPOINT_URL).get();
 
-        OpcUaClientConfigBuilder cfg = new OpcUaClientConfigBuilder();
-        cfg.setEndpoint(endpoints.get(0)); // please do better, and not only pick the first entry
+        OpcUaClientConfigBuilder clientConfigBuilder = new OpcUaClientConfigBuilder();
+        clientConfigBuilder.setEndpoint(endpoints.get(0)); // please do better, and not only pick the first entry
 
-        OpcUaClient client = OpcUaClient.create(cfg.build());
+        OpcUaClient client = OpcUaClient.create(clientConfigBuilder.build());
         client.connect().get();
 
-        // Browse for forward hierarchal references from the Objects folder
+        // Browse for forward hierarchical references from the Objects' folder
         // that lead to other Object and Variable nodes.
         BrowseDescription browse = new BrowseDescription(
                 Identifiers.ObjectsFolder,
@@ -55,16 +64,16 @@ public class Client {
         BrowseResult browseResult = client.browse(browse).get();
         System.out.println("Browse Result = " + browseResult);
 
-        for (ReferenceDescription referenceDescription: browseResult.getReferences()) {
-            System.out.println("Reference: "+referenceDescription.getNodeId());
+        for (ReferenceDescription referenceDescription : browseResult.getReferences()) {
+            System.out.println("Reference: " + referenceDescription.getNodeId());
         }
 
         AddressSpace addressSpace = client.getAddressSpace();
         UaNode serverNode = addressSpace.getNode(Identifiers.Server);
         List<? extends UaNode> nodes = addressSpace.browseNodes(serverNode);
 
-        for (UaNode uaNode: nodes) {
-            System.out.println("Node: "+uaNode.getNodeId());
+        for (UaNode uaNode : nodes) {
+            System.out.println("Node: " + uaNode.getNodeId());
 
         }
         QualifiedName qualifiedName = new QualifiedName(2, "MyObject");
@@ -92,10 +101,9 @@ public class Client {
         ).get();
 
 
-        for (DataValue item: readResponse.getResults()) {
+        for (DataValue item : readResponse.getResults()) {
             System.out.println(item.getValue());
         }
 
     }
-
 }
