@@ -49,7 +49,8 @@ public class Client {
 
         OpcUaClient client = OpcUaClient.create(clientConfigBuilder.build());
         client.connect().get();
-
+        System.out.println("client.getNamespaceTable() = " + client.getNamespaceTable());
+        System.out.println("client = " + endpoints.get(0));
         // Browse for forward hierarchical references from the Objects' folder
         // that lead to other Object and Variable nodes.
         BrowseDescription browse = new BrowseDescription(
@@ -80,9 +81,7 @@ public class Client {
 
 
         NodeId nodeId = new NodeId(2, "my-unique-identifier");
-
         List<ReadValueId> readValueIds = new ArrayList<>();
-
         readValueIds.add(
                 new ReadValueId(
                         nodeId,
