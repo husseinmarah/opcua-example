@@ -35,3 +35,9 @@ or
 `$ mvn -f pom.xml exec:java`
 or
 `$ mvn -f .\pom.xml exec:java@ClientMain`
+
+#### Run the subsctiption client
+
+`$ mvn -f pom.xml exec:java`
+or
+`$ mvn -f .\pom.xml exec:java@SubscriptionClient`
