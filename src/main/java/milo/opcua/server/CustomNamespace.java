@@ -1,5 +1,7 @@
 package milo.opcua.server;
 
+import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
+import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.sdk.core.AccessLevel;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
@@ -8,10 +10,14 @@ import org.eclipse.milo.opcua.sdk.server.api.MonitoredItem;
 import org.eclipse.milo.opcua.sdk.server.model.nodes.objects.FolderTypeNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.*;
 import org.eclipse.milo.opcua.sdk.server.util.SubscriptionModel;
+import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
-import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
-import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
+import org.eclipse.milo.opcua.stack.core.types.builtin.*;
+import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
+import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateRequest;
+import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateResult;
+import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
+import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +48,7 @@ public class CustomNamespace extends ManagedNamespace {
                 context,
                 newNodeId(1),
                 newQualifiedName("QualifiedFolderName"),
-                LocalizedText.english("This is the qualified name of the folder"));
+                LocalizedText.english("MainFolder"));
         context.getNodeManager().addNode(folder);
 
         // add the folder to the objects folder
@@ -58,9 +64,9 @@ public class CustomNamespace extends ManagedNamespace {
         {
             final UaVariableNode variableToBeWritten = new UaVariableNode(
                     context,
-                    newNodeId("my-unique-identifier"),
-                    newQualifiedName("OpcuaExample"),
-                    LocalizedText.english("OPCUA Example")) {
+                    newNodeId("1-unique-identifier"),
+                    newQualifiedName("WriteExample"),
+                    LocalizedText.english("Written Variable")) {
 //                @Override
 //                public DataValue getValue() {
 //                    return new DataValue(new Variant(Math.sin(System.currentTimeMillis() / 1000)));
@@ -72,11 +78,11 @@ public class CustomNamespace extends ManagedNamespace {
 
             // define the variable that would be read and updated from the simulation "visual component"
             UaVariableNode variableToBeRead = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                    .setNodeId(newNodeId("my-unique-identifier2"))
+                    .setNodeId(newNodeId("2-unique-identifier"))
                     .setAccessLevel(AccessLevel.READ_WRITE)
                     .setUserAccessLevel(AccessLevel.READ_WRITE)
-                    .setBrowseName(newQualifiedName("OpcuaExample2"))
-                    .setDisplayName(LocalizedText.english("OPCUA Example2"))
+                    .setBrowseName(newQualifiedName("ReadExample"))
+                    .setDisplayName(LocalizedText.english("Read Variable"))
                     .setDataType(Identifiers.Boolean)
                     .build();
 
@@ -90,6 +96,7 @@ public class CustomNamespace extends ManagedNamespace {
             variableToBeWritten.setValue(new DataValue(new Variant(true)));
 
 
+
             // Create a timer
             Timer timer = new Timer();
 
@@ -101,8 +108,8 @@ public class CustomNamespace extends ManagedNamespace {
                     // Run the application in "on" mode
                     runApp(true);
                     variableToBeWritten.setValue(new DataValue(new Variant(true)));
-                    System.out.println("variableToBeRead.getValue() = " + variableToBeRead.getValue());
-                    System.out.println("variableToBeWritten.getValue() = " + variableToBeWritten.getValue());
+                    System.out.println("variableToBeRead.getValue() = " + variableToBeRead.getValue().getValue());
+                    System.out.println("variableToBeWritten.getValue() = " + variableToBeWritten.getValue().getValue());
 
                     // Schedule a task to run after a delay
                     timer.schedule(new TimerTask() {
@@ -111,15 +118,12 @@ public class CustomNamespace extends ManagedNamespace {
                             // Turn off the application
                             runApp(false);
                             variableToBeWritten.setValue(new DataValue(new Variant(false)));
-                            System.out.println("variableToBeRead.getValue() = " + variableToBeRead.getValue());
-                            System.out.println("variableToBeWritten.getValue() = " + variableToBeWritten.getValue());
+                            System.out.println("variableToBeRead.getValue() = " + variableToBeRead.getValue().getValue());
+                            System.out.println("variableToBeWritten.getValue() = " + variableToBeWritten.getValue().getValue());
                         }
                     }, DELAY_MS);
                 }
             }, 0, INTERVAL_MS);
-
-
-
         }
 
         // add method call

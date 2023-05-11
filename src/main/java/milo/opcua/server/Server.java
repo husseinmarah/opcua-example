@@ -80,6 +80,8 @@ public class Server {
         // start it up
         server.startup().get();
 
+        System.out.println("server.getSubscriptions() = " + server.getSubscriptions());
+
         // don't wait for me
         Thread.sleep(Long.MAX_VALUE);
 

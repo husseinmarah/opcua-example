@@ -30,12 +30,12 @@
 
 
 <!--        this will log all the information about the application execution-->
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <version>1.2.1</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.1</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -94,4 +94,7 @@
             </plugins>
         </pluginManagement>
     </build>
+
+
+
 </project>

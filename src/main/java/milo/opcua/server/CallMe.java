@@ -7,14 +7,10 @@ import org.eclipse.milo.opcua.sdk.server.api.methods.AbstractMethodInvocationHan
 import org.eclipse.milo.opcua.sdk.server.api.methods.Out;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaMethodNode;
 import org.eclipse.milo.opcua.sdk.server.nodes.UaNodeContext;
-import org.eclipse.milo.opcua.sdk.server.annotations.UaInputArgument;
-import org.eclipse.milo.opcua.sdk.server.annotations.UaMethod;
-import org.eclipse.milo.opcua.sdk.server.annotations.UaOutputArgument;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
-import org.eclipse.milo.opcua.stack.core.types.structured.Annotation;
 
 public class CallMe {
 
