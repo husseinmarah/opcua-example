@@ -1,5 +1,5 @@
 # opcua-example
-Simple example of the OPC UA implementation using [Eclipse Milo](https://github.com/eclipse-milo/milo) Library
+Simple example of the [OPC UA](https://opcfoundation.org/about/opc-technologies/opc-ua/) implementation using [Eclipse Milo](https://github.com/eclipse-milo/milo) Library
 
 #### OPC UA Client SDK
 ```xml
